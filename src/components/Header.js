@@ -1,11 +1,25 @@
-import {AppBar, Button, fade, Menu, MenuItem, Tab, Tabs, Toolbar, useMediaQuery, useTheme} from "@material-ui/core";
+import {
+    AppBar,
+    Button,
+    IconButton,
+    Menu,
+    MenuItem,
+    SwipeableDrawer,
+    Tab,
+    Tabs,
+    Toolbar,
+    useMediaQuery,
+    useTheme
+} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
 import useScrollTrigger from "@material-ui/core/es/useScrollTrigger";
 import Slide from "@material-ui/core/Slide";
-
+import MenuIcon from '@material-ui/icons/Menu';
+import CloseIcon from '@material-ui/icons/Close';
 import logo from "../assets/logo.svg";
-import {makeStyles} from "@material-ui/styles";
+import style from "./header-style";
 import {Link} from "react-router-dom";
+
 
 let HideOnScroll = (props) => {
     const { children } = props;
@@ -20,7 +34,8 @@ let HideOnScroll = (props) => {
 let Header = (props) => {
     let [value, setValue] = useState(-1);
     let [anchor, setAnchor] = useState(null);
-    let [open, setOpen] = useState(false);
+    let [openMenu, setOpenMenu] = useState(false);
+    let [openDrawer, setOpenDrawer] = useState(false);
     let [selected, setSelected] = useState(-1);
 
     let handle = (e, val) => {
@@ -29,18 +44,22 @@ let Header = (props) => {
 
     let handleClick = (e) => {
         setAnchor(e.currentTarget);
-        setOpen(true);
+        setOpenMenu(true);
     }
 
     let handleClose = (e) => {
         setAnchor(null);
-        setOpen(false);
+        setOpenMenu(false);
     }
 
     let handleChange = (e, value, tabs = -1) => {
         handleClose(e);
         setSelected(value);
         setValue(tabs);
+    }
+
+    let toggleDrawer = (e) => {
+        setOpenDrawer(!openDrawer);
     }
 
     useEffect(() => {
@@ -84,69 +103,7 @@ let Header = (props) => {
 
     let theme = useTheme();
     let matches = useMediaQuery(theme.breakpoints.down("md"));
-
-    let style = makeStyles(theme => ({
-        spacing : {
-            ...theme.mixins.toolbar,
-            marginBottom : "3.2em",
-            [theme.breakpoints.down("md")] : {
-                marginBottom : "2.2em"
-            },
-            [theme.breakpoints.down("sm")] : {
-                marginBottom : "1.7em"
-            },
-            [theme.breakpoints.down("xs")] : {
-                marginBottom : "1.2em"
-            }
-        },
-        logo : {
-            height : "7em",
-            [theme.breakpoints.down("md")] : {
-                height : "6em"
-            },
-            [theme.breakpoints.down("sm")] : {
-                height : "5.5em"
-            },
-            [theme.breakpoints.down("xs")] : {
-                height : "5em"
-            }
-        },
-        tabs : {
-            marginLeft : "auto"
-        },
-        estimate : {
-            marginRight : "25px",
-            marginLeft : "50px",
-            color : "white",
-            borderRadius : "20px",
-            "&:hover" : {
-                backgroundColor : theme.palette.secondary.light
-            }
-        },
-        buttonLogo : {
-            padding : "0px 0px",
-            "&:hover" : {
-                background : "transparent"
-            }
-        },
-        menu : {
-            backgroundColor : fade(theme.palette.primary.light, 0.7),
-            color : "white",
-            borderRadius : "20px"
-        },
-        menuList : {
-
-        },
-        menuItem : {
-            "&:hover" : {
-                backgroundColor : fade(theme.palette.primary.light, 1)
-            }
-        },
-
-        selected : {
-            backgroundColor : fade(theme.palette.primary.light, 1.5)
-        }
-    }));
+    const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
     let classes = style(props.theme);
 
@@ -179,7 +136,7 @@ let Header = (props) => {
             <Tabs value={value} onChange={handle} className={classes.tabs} indicatorColor={"secondary"}>
                 <Tab label={"Home"} component={Link} to={"/"}>Home</Tab>
                 <Tab label={"Services"}
-                     aria-controls={open ? 'menu' : undefined}
+                     aria-controls={openMenu ? 'menu' : undefined}
                      aria-owns={anchor ? "menu" : undefined}
                      aria-haspopup={anchor ? "true" : undefined}
                      onMouseOver={handleClick}
@@ -189,15 +146,28 @@ let Header = (props) => {
                 <Tab label={"Contacts"} component={Link} to={"/contacts"}>Contact us</Tab>
             </Tabs>
             <Button color={"secondary"} variant={"contained"} className={classes.estimate} component={Link} to={"/estimate"}>Free Estimate</Button>
-            <Menu open={open} id={"menu"}
+            <Menu open={openMenu} id={"menu"}
                   anchorEl={anchor} onClose={handleClose}
-                  autoFocusItem={open} MenuListProps={{onMouseLeave : handleClose}}
+                  autoFocusItem={openMenu} MenuListProps={{onMouseLeave : handleClose}}
                   classes={{paper : classes.menu, list : classes.menuList}}
                   elevation={2}
             >
                 {menuOptions}
             </Menu>
         </>
+    );
+
+    let drawer = (
+        <div className={classes.drawerWrapper}>
+            <SwipeableDrawer variant={"persistent"} onClose={toggleDrawer} onOpen={toggleDrawer} open={openDrawer} disableBackdropTransition={!iOS} disableDiscovery={iOS} anchor={"right"}>
+                <IconButton>
+                    <CloseIcon onClick={toggleDrawer}/>
+                </IconButton>
+            </SwipeableDrawer>
+            <IconButton onClick={toggleDrawer} size={"medium"} disableRipple>
+                <MenuIcon className={classes.icon} style={{ fontSize: "1.5em" }}/>
+            </IconButton>
+        </div>
     );
 
     return(
@@ -208,7 +178,7 @@ let Header = (props) => {
                     <Button component={Link} to={"/"} disableRipple className={classes.buttonLogo}>
                         <img src={logo} alt="company logo" className={classes.logo}/>
                     </Button>
-                    {matches ? null : ResponsiveTabs}
+                    {matches ? drawer : ResponsiveTabs}
                 </Toolbar>
             </AppBar>
         </HideOnScroll>
