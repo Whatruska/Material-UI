@@ -1,7 +1,7 @@
 import {
     AppBar,
     Button,
-    IconButton,
+    IconButton, List, ListItem, ListItemIcon, ListItemText,
     Menu,
     MenuItem,
     SwipeableDrawer,
@@ -14,8 +14,19 @@ import {
 import React, {useEffect, useState} from "react";
 import useScrollTrigger from "@material-ui/core/es/useScrollTrigger";
 import Slide from "@material-ui/core/Slide";
+
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
+import HomeIcon from '@material-ui/icons/Home';
+import SettingsIcon from '@material-ui/icons/Settings';
+import InfoIcon from '@material-ui/icons/Info';
+import FiberNewIcon from '@material-ui/icons/FiberNew';
+import ContactsIcon from '@material-ui/icons/Contacts';
+import LanguageIcon from '@material-ui/icons/Language';
+import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
+import PhonelinkSetupIcon from '@material-ui/icons/PhonelinkSetup';
+import PhoneInTalkIcon from '@material-ui/icons/PhoneInTalk';
+
 import logo from "../assets/logo.svg";
 import style from "./header-style";
 import {Link} from "react-router-dom";
@@ -36,7 +47,8 @@ let Header = (props) => {
     let [anchor, setAnchor] = useState(null);
     let [openMenu, setOpenMenu] = useState(false);
     let [openDrawer, setOpenDrawer] = useState(false);
-    let [selected, setSelected] = useState(-1);
+    let [selectedTabOption, setSelectedTabOption] = useState(-1);
+    let [selectedDrawerOption, setSelectedDrawerOption] = useState(-1);
 
     let handle = (e, val) => {
         setValue(val);
@@ -54,7 +66,7 @@ let Header = (props) => {
 
     let handleChange = (e, value, tabs = -1) => {
         handleClose(e);
-        setSelected(value);
+        setSelectedTabOption(value);
         setValue(tabs);
     }
 
@@ -66,32 +78,32 @@ let Header = (props) => {
         switch (window.location.pathname) {
             case "/" : {
                 setValue(0);
-                setSelected(-1);
+                setSelectedTabOption(-1);
                 break;
             }
             case "/services" : {
                 setValue(1);
-                setSelected(-1);
+                setSelectedTabOption(-1);
                 break;
             }
             case "/about" : {
                 setValue(2);
-                setSelected(-1);
+                setSelectedTabOption(-1);
                 break;
             }
             case "/revolution" : {
                 setValue(3);
-                setSelected(-1);
+                setSelectedTabOption(-1);
                 break;
             }
             case "/contacts" : {
                 setValue(4);
-                setSelected(-1);
+                setSelectedTabOption(-1);
                 break;
             }
             case "/estimate" : {
                 setValue(5);
-                setSelected(-1);
+                setSelectedTabOption(-1);
                 break;
             }
 
@@ -108,10 +120,46 @@ let Header = (props) => {
     let classes = style(props.theme);
 
     let options = [
-        {services : "Services"},
-        {web : "Web site development"},
-        {desktop : "Desktop software development"},
-        {mobile : "Mobile development"}
+        {
+            services : "Services",
+            icon : <SettingsIcon/>
+        },
+        {
+            web : "Web site development",
+            icon : <LanguageIcon/>
+        },
+        {
+            desktop : "Desktop software development",
+            icon : <DesktopWindowsIcon/>
+        },
+        {
+            mobile : "Mobile development",
+            icon : <PhonelinkSetupIcon/>
+        },
+
+        {
+            estimate : "Free Estimate",
+            icon : <PhoneInTalkIcon/>
+        }
+    ];
+
+    let tabs = [
+        {
+            home : "Home",
+            icon : <HomeIcon/>
+        },
+        {
+            about : "About us",
+            icon : <InfoIcon/>
+        },
+        {
+            revolution : "Revolution",
+            icon : <FiberNewIcon/>
+        },
+        {
+            contacts : "Our contacts",
+            icon : <ContactsIcon/>
+        }
     ];
 
     let menuOptions = options.map((option, index) => {
@@ -126,8 +174,26 @@ let Header = (props) => {
                               handleChange(e, index, 1)
                           }
                       }}
-                      classes={{selected : classes.selected}} selected={selected === index}
+                      classes={{selected : classes.selected}} selected={selectedTabOption === index}
             >{value}</MenuItem>
+        );
+    });
+
+    let drawerOptions = tabs.concat(options).map((option, index) => {
+        let keys = Object.keys(option);
+        let key = keys[0];
+        let icon = option["icon"];
+        let value = option[key];
+        return (
+            <ListItem button selected={selectedDrawerOption === index} component={Link} to={"/" + (key === "home" ? "" : key)} onClick={(e) => {
+                toggleDrawer(e);
+                setSelectedDrawerOption(index);
+            }}>
+                <ListItemIcon>
+                    {icon ? icon : null}
+                </ListItemIcon>
+                <ListItemText primary={value}/>
+            </ListItem>
         );
     });
 
@@ -160,9 +226,12 @@ let Header = (props) => {
     let drawer = (
         <div className={classes.drawerWrapper}>
             <SwipeableDrawer variant={"persistent"} onClose={toggleDrawer} onOpen={toggleDrawer} open={openDrawer} disableBackdropTransition={!iOS} disableDiscovery={iOS} anchor={"right"}>
-                <IconButton>
-                    <CloseIcon onClick={toggleDrawer}/>
-                </IconButton>
+                <List>
+                    <IconButton size={"small"}>
+                        <CloseIcon onClick={toggleDrawer}/>
+                    </IconButton>
+                    {drawerOptions}
+                </List>
             </SwipeableDrawer>
             <IconButton onClick={toggleDrawer} size={"medium"} disableRipple>
                 <MenuIcon className={classes.icon} style={{ fontSize: "1.5em" }}/>

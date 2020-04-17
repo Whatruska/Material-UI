@@ -70,6 +70,10 @@ let style = makeStyles(theme => ({
 
     icon : {
         color : "white"
+    },
+
+    drawerIcon : {
+        color : theme.palette.primary.main
     }
 }));
 
