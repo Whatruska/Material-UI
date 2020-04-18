@@ -27,7 +27,7 @@ import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import PhonelinkSetupIcon from '@material-ui/icons/PhonelinkSetup';
 import PhoneInTalkIcon from '@material-ui/icons/PhoneInTalk';
 
-import logo from "../assets/logo.svg";
+import logo from "../../assets/logo.svg";
 import style from "./header-style";
 import {Link} from "react-router-dom";
 
@@ -43,12 +43,16 @@ let HideOnScroll = (props) => {
 }
 
 let Header = (props) => {
-    let [value, setValue] = useState(-1);
     let [anchor, setAnchor] = useState(null);
     let [openMenu, setOpenMenu] = useState(false);
     let [openDrawer, setOpenDrawer] = useState(false);
-    let [selectedTabOption, setSelectedTabOption] = useState(-1);
-    let [selectedDrawerOption, setSelectedDrawerOption] = useState(-1);
+
+    let value = props.value;
+    let setValue = props.setValue;
+    let selectedTabOption = props.selectedTabOption;
+    let setSelectedTabOption = props.setSelectedTabOption;
+    let selectedDrawerOption = props.selectedDrawerOption;
+    let setSelectedDrawerOption = props.setSelectedDrawerOption;
 
     let handle = (e, val) => {
         setValue(val);
@@ -117,7 +121,7 @@ let Header = (props) => {
     let matches = useMediaQuery(theme.breakpoints.down("md"));
     const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-    let classes = style(props.theme);
+    let classes = style(theme);
 
     let options = [
         {
@@ -136,11 +140,6 @@ let Header = (props) => {
             mobile : "Mobile development",
             icon : <PhonelinkSetupIcon/>
         },
-
-        {
-            estimate : "Free Estimate",
-            icon : <PhoneInTalkIcon/>
-        }
     ];
 
     let tabs = [
@@ -159,11 +158,15 @@ let Header = (props) => {
         {
             contacts : "Our contacts",
             icon : <ContactsIcon/>
-        }
+        },
+        {
+            estimate : "Free estimate",
+            icon : <PhoneInTalkIcon/>
+        },
     ];
 
     let menuOptions = options.map((option, index) => {
-        let key = Object.keys(option).pop();
+        let key = Object.keys(option)[0];
         let value = option[key];
         return (
             <MenuItem component={Link} to={"/" + key}
@@ -211,7 +214,10 @@ let Header = (props) => {
                 <Tab label={"Revolution"} component={Link} to={"/revolution"}>The revolution</Tab>
                 <Tab label={"Contacts"} component={Link} to={"/contacts"}>Contact us</Tab>
             </Tabs>
-            <Button color={"secondary"} variant={"contained"} className={classes.estimate} component={Link} to={"/estimate"}>Free Estimate</Button>
+            <Button color={"secondary"} variant={"contained"} className={classes.estimate} component={Link} to={"/estimate"} onClick={() => {
+                setSelectedDrawerOption(4);
+                setValue(-1);
+            }}>Free Estimate</Button>
             <Menu open={openMenu} id={"menu"}
                   anchorEl={anchor} onClose={handleClose}
                   autoFocusItem={openMenu} MenuListProps={{onMouseLeave : handleClose}}
