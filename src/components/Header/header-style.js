@@ -2,6 +2,9 @@ import {makeStyles} from "@material-ui/styles";
 import {fade} from "@material-ui/core";
 
 let style = makeStyles(theme => ({
+    header : {
+        width : "100vw"
+    },
     spacing : {
         ...theme.mixins.toolbar,
         marginBottom : "3.2em",
@@ -24,7 +27,7 @@ let style = makeStyles(theme => ({
             height : "5.5em"
         },
         [theme.breakpoints.down("xs")] : {
-            height : "5em"
+            height : "4.5em"
         }
     },
     tabs : {
@@ -69,7 +72,11 @@ let style = makeStyles(theme => ({
     },
 
     icon : {
-        color : "white"
+        color : "white",
+    },
+
+    icon_btn : {
+        marginRight : "1em"
     },
 
     drawerIcon : {

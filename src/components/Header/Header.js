@@ -115,7 +115,7 @@ let Header = (props) => {
                 break;
             }
         }
-    },[value]);
+    },[value, setSelectedTabOption, setValue]);
 
     let theme = useTheme();
     let matches = useMediaQuery(theme.breakpoints.down("md"));
@@ -239,7 +239,7 @@ let Header = (props) => {
                     {drawerOptions}
                 </List>
             </SwipeableDrawer>
-            <IconButton onClick={toggleDrawer} size={"medium"} disableRipple>
+            <IconButton onClick={toggleDrawer} size={"medium"} disableRipple className={classes.icon_btn}>
                 <MenuIcon className={classes.icon} style={{ fontSize: "1.5em" }}/>
             </IconButton>
         </div>

@@ -9,12 +9,25 @@ let style = makeStyles((theme) => ({
 
     adornment : {
         height : "12em",
+        [theme.breakpoints.down("sm")] : {
+            height : "8em"
+        },
+        [theme.breakpoints.down("xs")] : {
+            height : "6em"
+        },
     },
 
     link_wrapper: {
         position : "absolute",
         height : "12em",
+        [theme.breakpoints.down("sm")] : {
+            height : "8em"
+        },
+        [theme.breakpoints.down("xs")] : {
+            height : "6em"
+        },
         margin : "auto",
+        width : "100vw"
     },
 
     link_item : {
@@ -29,6 +42,17 @@ let style = makeStyles((theme) => ({
     link_column : {
         justifyContent : "flex-start"
     },
+
+    social_icon : {
+        color : "white",
+        fontSize : "5em",
+        [theme.breakpoints.down("sm")] : {
+            fontSize : "4em"
+        },
+        [theme.breakpoints.down("xs")] : {
+            fontSize : "2.5em"
+        },
+    }
 }));
 
 export default style;

@@ -2,8 +2,12 @@ import React from "react";
 import Adornment from "../../assets/Footer Adornment.svg"
 import {useTheme} from "@material-ui/styles";
 import style from "./footer-styles";
-import {Grid} from "@material-ui/core";
+import {Grid, Hidden} from "@material-ui/core";
 import {Link} from "react-router-dom";
+
+import InstagramIcon from '@material-ui/icons/Instagram';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import TwitterIcon from '@material-ui/icons/Twitter';
 
 let Footer = (props) => {
 
@@ -105,9 +109,30 @@ let Footer = (props) => {
     return(
       <footer className={classes.footer}>
           <img src={Adornment} alt={"adornment"} className={classes.adornment}/>
-          <Grid container className={classes.link_wrapper} direction={"row"} justify={"center"} spacing={8}>
-              {renderedColumns}
-          </Grid>
+          <Hidden smDown>
+              <Grid container className={classes.link_wrapper} direction={"row"} justify={"center"} spacing={8}>
+                  {renderedColumns}
+              </Grid>
+          </Hidden>
+          <Hidden mdUp>
+              <Grid container className={classes.link_wrapper} spacing={8} justify={"center"} alignItems={"center"}>
+                  <Grid item className={classes.link_column}>
+                      <a href={"http://instagram.com"}>
+                          <InstagramIcon className={classes.social_icon}/>
+                      </a>
+                  </Grid>
+                  <Grid item className={classes.link_column}>
+                      <a href={"http://facebook.com"}>
+                          <FacebookIcon className={classes.social_icon}/>
+                      </a>
+                  </Grid>
+                  <Grid item className={classes.link_column}>
+                      <a href={"http://twitter.com"}>
+                          <TwitterIcon className={classes.social_icon}/>
+                      </a>
+                  </Grid>
+              </Grid>
+          </Hidden>
       </footer>
     );
 }
